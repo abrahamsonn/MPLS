@@ -94,7 +94,7 @@ class NetworkPacket:
     # @param byte_S: byte string representation of the packet
     @classmethod
     def from_byte_S(self, byte_S):
-        dst = byte_S[0 : NetworkPacket.dst_S_length].strip('0') # what the fuck does this line even do?
+        dst = byte_S[0 : NetworkPacket.dst_S_length].strip('0')
         data_S = byte_S[NetworkPacket.dst_S_length : ]
         return self(dst, data_S)
 
