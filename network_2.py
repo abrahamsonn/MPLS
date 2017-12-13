@@ -14,7 +14,7 @@ class MPLS:
         # only encapsulate with an M if it hasn't been done yet.
         #self.new_packet = "M" + str(label).zfill(2) + new_string
         self.new_packet = str(label).zfill(2) + new_string
-        print("new_packet = %s\n\n" % self.new_packet)
+#        print("new_packet = %s\n\n" % self.new_packet)
 
     def to_byte_S(self):
         return str(self.new_packet)
@@ -80,9 +80,9 @@ class NetworkPacket:
         self.dst = dst
         self.data_S = data_S
         self.priority = priority
-        print("Packet destination = %s" % str(self.dst))
-        print("Packet priority = %s" % str(self.priority))
-        print("Packet data upon initialization = %s \n" % str(self.data_S))
+#        print("Packet destination = %s" % str(self.dst))
+#        print("Packet priority = %s" % str(self.priority))
+#        print("Packet data upon initialization = %s \n" % str(self.data_S))
         #TODO: add priority to the packet class
 
     ## called when printing the object
@@ -100,7 +100,7 @@ class NetworkPacket:
     @classmethod
     def from_byte_S(self, byte_S):
         dst = byte_S[0 : NetworkPacket.dst_S_length].strip('0')
-        print("byte_S = %s\ndst = %s\n" % (str(byte_S), str(dst)))
+#        print("byte_S = %s\ndst = %s\n" % (str(byte_S), str(dst)))
         data_S = byte_S[NetworkPacket.dst_S_length : ]
         return self(dst, data_S)
 
@@ -113,9 +113,9 @@ class Host:
         self.addr = addr
         self.intf_L = [Interface()]
         self.stop = False #for thread termination
-        print("Host address = %s" % str(addr))
-        print("Host interface list = %s" % str(self.intf_L))
-        print("Host stop = %s\n" % str(self.stop))
+#        print("Host address = %s" % str(addr))
+#        print("Host interface list = %s" % str(self.intf_L))
+#        print("Host stop = %s\n" % str(self.stop))
 
     ## called when printing the object
     def __str__(self):
@@ -127,12 +127,12 @@ class Host:
     # @param priority: packet priority
     def udt_send(self, dst, data_S, priority=0):
         pkt = NetworkPacket(dst, data_S)
-        print('sending packet "%s"' % (str(pkt)))
+#        print('sending packet "%s"' % (str(pkt)))
         #encapsulate network packet in a link frame (usually would be done by the OS)
         fr = LinkFrame('Network', pkt.to_byte_S())
         #enque frame onto the interface for transmission
         self.intf_L[0].put(fr.to_byte_S(), 'out')
-        print("Placing %s on interface %s with mode %s\n" % (str(fr.to_byte_S()), str(0), str("out")))
+#        print("Placing %s on interface %s with mode %s\n" % (str(fr.to_byte_S()), str(0), str("out")))
 
     ## receive frame from the link layer
     def udt_receive(self):
@@ -144,6 +144,9 @@ class Host:
         assert(fr.type_S == 'Network') #should be receiving network packets by hosts
         pkt_S = fr.data_S
         #print('received packet = %s' % str(pkt_S))
+
+        print("\n(Host %s) received message: %s" % (str(self), pkt_S))
+
         return pkt_S
 
     ## thread target for the host to keep receiving data
@@ -153,7 +156,8 @@ class Host:
             #receive data arriving to the in interface
             received = self.udt_receive()
             if received != None:
-                print("Received packet string = %s\n" % str(received))
+#                print("Received packet string = %s\n" % str(received))
+                pass
             #terminate
             if(self.stop):
                 #print (threading.currentThread().getName() + ': Ending')
@@ -179,12 +183,12 @@ class Router:
         self.encap_tbl_D = encap_tbl_D
         self.frwd_tbl_D = frwd_tbl_D
         self.decap_tbl_D = decap_tbl_D
-        print("Router stop = %s" % str(self.stop))
-        print("Router name = %s" % str(self.name))
-        print("Router interface list = %s" % str(self.intf_L))
-        print("Router encapsulation table directory = %s" % str(self.encap_tbl_D))
-        print("Router forward table directory = %s" % str(self.frwd_tbl_D))
-        print("Router decapsulation table directory = %s\n" % str(self.decap_tbl_D))
+#        print("Router stop = %s" % str(self.stop))
+#        print("Router name = %s" % str(self.name))
+#        print("Router interface list = %s" % str(self.intf_L))
+#        print("Router encapsulation table directory = %s" % str(self.encap_tbl_D))
+#        print("Router forward table directory = %s" % str(self.frwd_tbl_D))
+#        print("Router decapsulation table directory = %s\n" % str(self.decap_tbl_D))
 
     ## called when printing the object
     def __str__(self):
@@ -205,11 +209,11 @@ class Router:
             #process the packet as network, or MPLS
             if fr.type_S == "Network":
                 p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
-                print 'NETWORK QUEUE ' + pkt_S
+#                print 'NETWORK QUEUE ' + pkt_S
                 self.process_network_packet(p, i)
             elif fr.type_S == "MPLS":
                 # TODO: handle MPLS frames
-                print 'MPLS QUEUE ' + pkt_S
+#                print 'MPLS QUEUE ' + pkt_S
                 mplsPacket = MPLS.from_byte_S(pkt_S) #parse a frame out
                 #for now, we just relabel the packet as an MPLS frame without encapsulation
                 #m_fr = p
@@ -225,8 +229,8 @@ class Router:
         #TODO: encapsulate the packet in an MPLS frame based on self.encap_tbl_D
         #for now, we just relabel the packet as an MPLS frame without encapsulation
         #m_fr = MPLS(pkt)
-        print("Router name = %s" % str(self.name))
-        print("pkt.to_byte_S = %s\ni = %s\npkt.dst = %s\n" % (pkt.to_byte_S(), str(i), str(pkt.dst)))
+#        print("Router name = %s" % str(self.name))
+#        print("pkt.to_byte_S = %s\ni = %s\npkt.dst = %s\n" % (pkt.to_byte_S(), str(i), str(pkt.dst)))
         out_label = self.encap_tbl_D[i][pkt.dst]
         m_packet = MPLS(pkt, out_label)
         #print('%s: encapsulated packet "%s" as MPLS frame "%s"' % (self, pkt, m_fr))
@@ -245,7 +249,7 @@ class Router:
             outInterface = -1
             if i in self.decap_tbl_D:
                 # decapsulate
-                print("DECAPSULATION BLOCK\nRouter name = %s\nString received = %s\n" % (str(self.name),m_packet.to_byte_S()))
+#                print("DECAPSULATION BLOCK\nRouter name = %s\nString received = %s\n" % (str(self.name),m_packet.to_byte_S()))
                 dst = m_packet.new_packet[2:7].strip('0')
                 data_S = m_packet.new_packet[7:]
                 fr = LinkFrame('Network', NetworkPacket(dst, data_S).to_byte_S())

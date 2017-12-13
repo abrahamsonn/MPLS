@@ -89,7 +89,9 @@ if __name__ == '__main__':
     #create some send events    
     priority = 2
     host_1.udt_send('H3', 'MESSAGE_FROM_H1', priority)
+    print("Sending message from H1 to H3 with priority %d: \"MESSAGE_FROM_H1\"" % priority)
     host_2.udt_send('H3', 'MESSAGE_FROM_H2', priority)
+    print("Sending message from H2 to H3 with priority %d: \"MESSAGE_FROM_H2\"\n" % priority)
         
     #give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
