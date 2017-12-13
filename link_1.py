@@ -25,6 +25,7 @@ class LinkFrame:
             byte_S += 'M' # of length type_S_length
         elif self.type_S == 'Network':
             byte_S += 'N'
+            pass
         else:
             raise('%s: unknown type_S option: %s' %(self, self.type_S))
         byte_S += self.data_S

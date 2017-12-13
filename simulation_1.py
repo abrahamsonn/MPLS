@@ -1,5 +1,5 @@
-from network import Router, Host
-from link import Link, LinkLayer
+from network_1 import Router, Host
+from link_1 import Link, LinkLayer
 import threading
 from time import sleep
 import sys
@@ -19,9 +19,9 @@ if __name__ == '__main__':
     object_L.append(host_2)
     
     #create routers and routing tables for connected clients (subnets)
-    encap_tbl_D = {}    # table used to encapsulate network packets into MPLS frames
+    encap_tbl_D = {0:{'H2':1}}    # table used to encapsulate network packets into MPLS frames
     frwd_tbl_D = {}     # table used to forward MPLS frames
-    decap_tbl_D = {}    # table used to decapsulate network packets from MPLS frames
+    decap_tbl_D = {1:{2:0}}    # table used to decapsulate network packets from MPLS frames
     router_a = Router(name='RA', 
                               intf_capacity_L=[500,500],
                               encap_tbl_D = encap_tbl_D,
@@ -30,9 +30,9 @@ if __name__ == '__main__':
                               max_queue_size=router_queue_size)
     object_L.append(router_a)
 
-    encap_tbl_D = {}    
+    encap_tbl_D = {1:{'H1':02}}
     frwd_tbl_D = {}     
-    decap_tbl_D = {}    
+    decap_tbl_D = {0:{1:1}}
     router_b = Router(name='RB', 
                               intf_capacity_L=[500,100],
                               encap_tbl_D = encap_tbl_D,
